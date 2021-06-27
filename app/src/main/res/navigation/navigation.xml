@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/authenticationFragment">
+
+    <fragment
+        android:id="@+id/authenticationFragment"
+        android:name="pl.edu.pja.mob2.AuthenticationFragment"
+        android:label="fragment_authentication"
+        tools:layout="@layout/fragment_authentication" >
+        <action
+            android:id="@+id/action_authenticationFragment_to_accidentFragment"
+            app:destination="@id/accidentFragment"
+            app:popUpTo="@id/accidentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/accidentFragment"
+        android:name="pl.edu.pja.mob2.AccidentFragment"
+        android:label="fragment_accident"
+        tools:layout="@layout/fragment_accident" >
+        <action
+            android:id="@+id/action_accidentFragment_to_addAccidentFragment"
+            app:destination="@id/addAccidentFragment" />
+        <action
+            android:id="@+id/action_accidentFragment_to_editAccidentFragment"
+            app:destination="@id/editAccidentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addAccidentFragment"
+        android:name="pl.edu.pja.mob2.AddAccidentFragment"
+        android:label="fragment_add_accident"
+        tools:layout="@layout/fragment_add_accident" />
+    <fragment
+        android:id="@+id/editAccidentFragment"
+        android:name="pl.edu.pja.mob2.EditAccidentFragment"
+        android:label="fragment_edit_accident"
+        tools:layout="@layout/fragment_edit_accident" />
+</navigation>

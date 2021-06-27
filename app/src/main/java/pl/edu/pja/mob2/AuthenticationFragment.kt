@@ -2,10 +2,14 @@ package pl.edu.pja.mob2
 
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -14,7 +18,7 @@ import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 
-class AuthenticationActivity : AppCompatActivity(R.layout.authentication_fragment) {
+class AuthenticationFragment : Fragment() {
     private lateinit var oneTapClient: SignInClient
     private lateinit var signInRequest: BeginSignInRequest
     private lateinit var registerRequest: BeginSignInRequest
@@ -22,11 +26,10 @@ class AuthenticationActivity : AppCompatActivity(R.layout.authentication_fragmen
 
     private var oneTapDeclined = false
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        oneTapClient = Identity.getSignInClient(this)
+        oneTapClient = Identity.getSignInClient(requireContext())
         signInRequest = BeginSignInRequest.builder().setGoogleIdTokenRequestOptions(
             BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                 .setSupported(true)
@@ -49,7 +52,7 @@ class AuthenticationActivity : AppCompatActivity(R.layout.authentication_fragmen
                     oneTapClient.getSignInCredentialFromIntent(activityResult.data).googleIdToken?.let {
                         val credentials = GoogleAuthProvider.getCredential(it, null)
                         FirebaseAuth.getInstance().signInWithCredential(credentials)
-                            .addOnSuccessListener { finish() }
+                            .addOnSuccessListener { view?.findNavController()?.navigate(AuthenticationFragmentDirections.actionAuthenticationFragmentToAccidentFragment()) }
                             .addOnFailureListener { Log.wtf("asdfasdf", "asdfasdfasdf") }
                     }
 
@@ -67,14 +70,25 @@ class AuthenticationActivity : AppCompatActivity(R.layout.authentication_fragmen
             }
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_authentication, container, false)
+    }
+
+
+
+
     override fun onStart() {
         super.onStart()
 
         if (!oneTapDeclined) {
             oneTapClient.beginSignIn(signInRequest).addOnSuccessListener { result ->
-                    oneTapLauncher.launch(
-                        IntentSenderRequest.Builder(result.pendingIntent.intentSender).build()
-                    )
+                oneTapLauncher.launch(
+                    IntentSenderRequest.Builder(result.pendingIntent.intentSender).build()
+                )
             }.addOnFailureListener { failure ->
 
                 oneTapClient.beginSignIn(registerRequest).addOnSuccessListener { result ->
@@ -90,6 +104,3 @@ class AuthenticationActivity : AppCompatActivity(R.layout.authentication_fragmen
         }
     }
 }
-
-
-
