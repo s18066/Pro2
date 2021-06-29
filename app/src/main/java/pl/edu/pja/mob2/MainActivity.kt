@@ -30,8 +30,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onStart() {
         super.onStart()
 
-        Firebase.auth.signOut()
-
 //        if (Firebase.auth.currentUser == null) {
 //            val authenticationIntent = Intent(this, AuthenticationActivity::class.java)
 //            authenticationIntentLauncher.launch(authenticationIntent)

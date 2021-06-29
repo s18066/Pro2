@@ -17,6 +17,8 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class AuthenticationFragment : Fragment() {
     private lateinit var oneTapClient: SignInClient
@@ -51,7 +53,7 @@ class AuthenticationFragment : Fragment() {
                 try {
                     oneTapClient.getSignInCredentialFromIntent(activityResult.data).googleIdToken?.let {
                         val credentials = GoogleAuthProvider.getCredential(it, null)
-                        FirebaseAuth.getInstance().signInWithCredential(credentials)
+                        Firebase.auth.signInWithCredential(credentials)
                             .addOnSuccessListener { view?.findNavController()?.navigate(AuthenticationFragmentDirections.actionAuthenticationFragmentToAccidentFragment()) }
                             .addOnFailureListener { Log.wtf("asdfasdf", "asdfasdfasdf") }
                     }
