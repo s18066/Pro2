@@ -10,6 +10,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment.findNavController
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -30,6 +31,10 @@ class AuthenticationFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if(Firebase.auth.currentUser != null) {
+            findNavController(this)?.navigate(AuthenticationFragmentDirections.actionAuthenticationFragmentToAccidentFragment())
+        }
 
         oneTapClient = Identity.getSignInClient(requireContext())
         signInRequest = BeginSignInRequest.builder().setGoogleIdTokenRequestOptions(
@@ -54,7 +59,7 @@ class AuthenticationFragment : Fragment() {
                     oneTapClient.getSignInCredentialFromIntent(activityResult.data).googleIdToken?.let {
                         val credentials = GoogleAuthProvider.getCredential(it, null)
                         Firebase.auth.signInWithCredential(credentials)
-                            .addOnSuccessListener { view?.findNavController()?.navigate(AuthenticationFragmentDirections.actionAuthenticationFragmentToAccidentFragment()) }
+                            .addOnSuccessListener { findNavController(this)?.navigate(AuthenticationFragmentDirections.actionAuthenticationFragmentToAccidentFragment()) }
                             .addOnFailureListener { Log.wtf("asdfasdf", "asdfasdfasdf") }
                     }
 
@@ -79,8 +84,6 @@ class AuthenticationFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_authentication, container, false)
     }
-
-
 
 
     override fun onStart() {

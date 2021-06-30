@@ -30,8 +30,6 @@ import java.util.*
 
 class AccidentFragment : Fragment() {
     private val binding by lazy { FragmentAccidentBinding.inflate(layoutInflater) }
-
-
     private val database by lazy { Firebase.firestore.collection("accidents") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,22 +51,53 @@ class AccidentFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        displayAccidentList()
+    }
+
     private fun displayAccidentList() {
         database.get().addOnSuccessListener {
             binding.accidentList.apply {
-                adapter = AccidentAdapter(it.toObjects())
+                adapter = AccidentAdapter(it.documents.map { x ->
+                    Accident(
+                        x.id,
+                        x["photoUri"].toString(),
+                        x["name"].toString(),
+                        Date.from(Instant.parse(x["date"].toString())),
+                        x["user"].toString(),
+                        x["userName"].toString()
+                    )
+                },
+                    object : OnAccidentClick {
+                        override fun onClick(accidentsId: String, accidentPhoto: String) {
+                            view?.findNavController()
+                                ?.navigate(
+                                    AccidentFragmentDirections.actionAccidentFragmentToAccidentDetailsFragment(
+                                        accidentsId,
+                                        accidentPhoto
+                                    )
+                                )
+                        }
+
+                    })
                 layoutManager = LinearLayoutManager(requireContext())
             }
         }
     }
-
 }
 
-class AccidentAdapter(private val accidents: List<Accident>) :
+class AccidentAdapter(
+    private val accidents: List<Accident>,
+    private val callback: OnAccidentClick
+) :
     RecyclerView.Adapter<AccidentAdapter.AccidentViewHolder>() {
 
 
-    class AccidentViewHolder(private val binding: AccidentCardBinding) :
+    class AccidentViewHolder(
+        private val binding: AccidentCardBinding,
+        private val callback: OnAccidentClick
+    ) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(accident: Accident) {
@@ -77,7 +106,7 @@ class AccidentAdapter(private val accidents: List<Accident>) :
             binding.accidentCardPlace.text = accident.place
 
             val localFile = File.createTempFile(UUID.randomUUID().toString(), ".jpg")
-            if(accident.photoUri != "")
+            if (accident.photoUri != "")
                 Firebase.storage.reference.child(accident.photoUri).getFile(localFile)
                     .addOnSuccessListener {
                         val bitmapOptions = BitmapFactory.Options().apply {
@@ -103,6 +132,10 @@ class AccidentAdapter(private val accidents: List<Accident>) :
                                 bitmapOptions
                             )
                         )
+
+                        binding.root.setOnClickListener() {
+                            callback.onClick(accident.id, localFile.absolutePath)
+                        }
                     }
         }
     }
@@ -110,7 +143,7 @@ class AccidentAdapter(private val accidents: List<Accident>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccidentViewHolder {
         val binding =
             AccidentCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return AccidentViewHolder(binding)
+        return AccidentViewHolder(binding, callback)
     }
 
     override fun getItemCount(): Int {
@@ -124,9 +157,15 @@ class AccidentAdapter(private val accidents: List<Accident>) :
 
 
 data class Accident(
+    var id: String = "",
     var photoUri: String = "",
     var name: String = "",
     var date: Date = Date.from(Instant.now()),
     var user: String = "",
+    var userName: String = "",
     var place: String = ""
 )
+
+interface OnAccidentClick {
+    fun onClick(accidentsId: String, accidentPhoto: String)
+}

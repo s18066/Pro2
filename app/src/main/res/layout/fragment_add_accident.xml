@@ -21,8 +21,8 @@
 
         <ImageView
             android:id="@+id/accident_preview"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="349dp"
+            android:layout_height="208dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
@@ -31,6 +31,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_accident_description"
+            app:srcCompat="@drawable/ic_baseline_add_a_photo_24"
             tools:src="@drawable/ic_baseline_add_a_photo_24" />
 
         <EditText
@@ -41,8 +42,8 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             android:ems="10"
+            android:hint="Nazwa zgłoszenia"
             android:inputType="textPersonName"
-            android:text="Name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.079"
             app:layout_constraintStart_toStartOf="parent"
@@ -57,6 +58,7 @@
             android:layout_marginEnd="24dp"
             android:ems="10"
             android:gravity="start|top"
+            android:hint="Opis"
             android:inputType="textMultiLine"
             android:maxLength="500"
             app:layout_constraintEnd_toEndOf="parent"

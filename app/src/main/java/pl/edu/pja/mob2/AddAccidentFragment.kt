@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
@@ -22,6 +24,7 @@ import com.google.firebase.storage.ktx.storage
 import pl.edu.pja.mob2.databinding.FragmentAddAccidentBinding
 import java.io.File
 import java.io.IOException
+import java.time.Instant
 import java.util.*
 import kotlin.jvm.Throws
 
@@ -60,11 +63,6 @@ class AddAccidentFragment : Fragment() {
             }
         }
 
-    private val uploadPhotoIntentLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -99,6 +97,9 @@ class AddAccidentFragment : Fragment() {
     }
 
     private fun onSaveButtonClick() {
+        if(!(validateField(binding.addAccidentAccidentName) and validateField(binding.addAccidentDescription)))
+            return
+
         val name = binding.addAccidentAccidentName.text
         val description = binding.addAccidentDescription.text
 
@@ -117,7 +118,9 @@ class AddAccidentFragment : Fragment() {
                     "description" to description.toString(),
                     "name" to name.toString(),
                     "user" to user.uid,
-                    "photoUri" to "photos/${photo.name}"
+                    "photoUri" to "photos/${photo.name}",
+                    "userName" to user.displayName,
+                    "date" to Instant.now().toString()
                 )
 
                 database.collection("accidents").add(accident)
@@ -134,5 +137,14 @@ class AddAccidentFragment : Fragment() {
     private fun createImageFile(): File {
         val storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(UUID.randomUUID().toString(), ".jpg", storageDir)
+    }
+
+    private fun validateField(toCheck: EditText): Boolean {
+        if (toCheck.text.isEmpty()) {
+            toCheck.error = "Musi być wypełninone"
+            return false
+        }
+
+        return true
     }
 }
