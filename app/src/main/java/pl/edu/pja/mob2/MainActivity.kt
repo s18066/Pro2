@@ -1,42 +1,26 @@
 package pl.edu.pja.mob2
 
-import android.app.Activity
 import android.os.Bundle
 import android.os.PersistableBundle
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import androidx.core.view.isVisible
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import pl.edu.pja.mob2.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity(R.layout.activity_main) {
+class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
-
-    private var authenticationIntentLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                // Go to app
-            }
-        }
-
-
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-    }
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        findViewById<BottomNavigationView>(R.id.bottomNavigationView).setupWithNavController(navHostFragment.navController)
 
-    override fun onStart() {
-        super.onStart()
-
-//        if (Firebase.auth.currentUser == null) {
-//            val authenticationIntent = Intent(this, AuthenticationActivity::class.java)
-//            authenticationIntentLauncher.launch(authenticationIntent)
-//        }
-
-//        supportFragmentManager.commit {
-//            setReorderingAllowed(true)
-//            add<AuthenticationActivity>(R.id.fragment_container_view)
+        navHostFragment.navController.addOnDestinationChangedListener { _, _, arguments ->
+            binding.bottomNavigationView.isVisible = arguments?.getBoolean("ShowAppBar", false) == true
+        }
     }
 }

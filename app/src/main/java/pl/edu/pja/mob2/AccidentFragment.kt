@@ -9,11 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
@@ -34,6 +37,10 @@ class AccidentFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if(Firebase.auth.currentUser == null) {
+            NavHostFragment.findNavController(this)?.navigate(AccidentFragmentDirections.actionAccidentFragmentToAuthenticationFragment())
+        }
 
         displayAccidentList()
 
@@ -57,7 +64,7 @@ class AccidentFragment : Fragment() {
     }
 
     private fun displayAccidentList() {
-        database.get().addOnSuccessListener {
+        database.orderBy("date", Query.Direction.DESCENDING).get().addOnSuccessListener {
             binding.accidentList.apply {
                 adapter = AccidentAdapter(it.documents.map { x ->
                     Accident(
@@ -66,16 +73,16 @@ class AccidentFragment : Fragment() {
                         x["name"].toString(),
                         Date.from(Instant.parse(x["date"].toString())),
                         x["user"].toString(),
-                        x["userName"].toString()
+                        x["userName"].toString(),
+                        x["place"].toString()
                     )
                 },
                     object : OnAccidentClick {
-                        override fun onClick(accidentsId: String, accidentPhoto: String) {
+                        override fun onClick(accidentsId: String) {
                             view?.findNavController()
                                 ?.navigate(
                                     AccidentFragmentDirections.actionAccidentFragmentToAccidentDetailsFragment(
-                                        accidentsId,
-                                        accidentPhoto
+                                        accidentsId
                                     )
                                 )
                         }
@@ -134,7 +141,7 @@ class AccidentAdapter(
                         )
 
                         binding.root.setOnClickListener() {
-                            callback.onClick(accident.id, localFile.absolutePath)
+                            callback.onClick(accident.id)
                         }
                     }
         }
@@ -167,5 +174,5 @@ data class Accident(
 )
 
 interface OnAccidentClick {
-    fun onClick(accidentsId: String, accidentPhoto: String)
+    fun onClick(accidentsId: String)
 }

@@ -22,31 +22,36 @@
 
         <TextView
             android:id="@+id/accident_card_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/accident_card_image"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/accident_card_place"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/accident_card_image"
             app:layout_constraintTop_toBottomOf="@+id/accident_card_name" />
 
         <TextView
             android:id="@+id/accident_card_date"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/accident_card_image"
             app:layout_constraintTop_toBottomOf="@+id/accident_card_place" />
     </androidx.constraintlayout.widget.ConstraintLayout>

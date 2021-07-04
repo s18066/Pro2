@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/authenticationFragment">
+    app:startDestination="@id/accidentFragment">
 
     <fragment
         android:id="@+id/authenticationFragment"
@@ -21,18 +21,28 @@
         android:name="pl.edu.pja.mob2.AccidentFragment"
         android:label="fragment_accident"
         tools:layout="@layout/fragment_accident" >
+        <argument
+            android:name="ShowAppBar"
+            android:defaultValue="true" />
         <action
             android:id="@+id/action_accidentFragment_to_addAccidentFragment"
             app:destination="@id/addAccidentFragment" />
         <action
             android:id="@+id/action_accidentFragment_to_accidentDetailsFragment"
             app:destination="@id/accidentDetailsFragment" />
+        <action
+            android:id="@+id/action_accidentFragment_to_authenticationFragment"
+            app:destination="@id/authenticationFragment" />
     </fragment>
     <fragment
         android:id="@+id/addAccidentFragment"
         android:name="pl.edu.pja.mob2.AddAccidentFragment"
         android:label="fragment_add_accident"
-        tools:layout="@layout/fragment_add_accident" />
+        tools:layout="@layout/fragment_add_accident" >
+        <action
+            android:id="@+id/action_addAccidentFragment_to_accidentLocationFragment"
+            app:destination="@id/accidentLocationFragment" />
+    </fragment>
     <fragment
         android:id="@+id/editAccidentFragment"
         android:name="pl.edu.pja.mob2.EditAccidentFragment"
@@ -56,8 +66,26 @@
         <argument
             android:name="accident_id"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/accidentLocationFragment"
+        android:name="pl.edu.pja.mob2.AccidentLocationFragment"
+        android:label="fragment_accident_location"
+        tools:layout="@layout/fragment_accident_location" >
+        <action
+            android:id="@+id/action_accidentLocationFragment_to_addAccidentFragment"
+            app:destination="@id/addAccidentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/allAccidentsFragment"
+        android:name="pl.edu.pja.mob2.AllAccidentsFragment"
+        android:label="fragment_all_accidents"
+        tools:layout="@layout/fragment_all_accidents">
         <argument
-            android:name="accident_photo"
-            app:argType="string" />
+            android:name="ShowAppBar"
+            android:defaultValue="true" />
+        <action
+            android:id="@+id/action_allAccidentsFragment_to_accidentDetailsFragment"
+            app:destination="@id/accidentDetailsFragment" />
     </fragment>
 </navigation>

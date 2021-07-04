@@ -3,6 +3,7 @@ package pl.edu.pja.mob2
 import android.app.Activity
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -15,6 +16,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.Source
@@ -32,6 +38,12 @@ class EditAccidentFragment : Fragment() {
     private val binding by lazy { FragmentEditAccidentBinding.inflate(layoutInflater) }
     private val database by lazy { Firebase.firestore.collection("accidents") }
     private val storage by lazy { Firebase.storage.reference }
+
+    private lateinit var marker: Marker
+    private lateinit var map: GoogleMap
+    private val geocoder by lazy { Geocoder(requireContext()) }
+
+
     private val args: EditAccidentFragmentArgs by navArgs()
     private lateinit var photo: File
     private val photoCaptureIntentLauncher =
@@ -67,6 +79,8 @@ class EditAccidentFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        binding.editAccidentMap.onCreate(null)
+
         database.document(args.accidentId).get(Source.CACHE).addOnSuccessListener {
             binding.editAccidentDescription.setText(it["description"].toString())
             binding.editAccidentAccidentName.setText(it["name"].toString())
@@ -96,6 +110,15 @@ class EditAccidentFragment : Fragment() {
                     bitmapOptions
                 )
             )
+
+            val position = LatLng(it["lat"].toString().toDouble(), it["lng"].toString().toDouble())
+            binding.editAccidentMap.getMapAsync { map ->
+                marker = map.addMarker(MarkerOptions().position(position))
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 17f))
+                map.setOnMapClickListener {
+                    marker.position = it
+                }
+            }
         }
 
         binding.accidentPreview.setOnClickListener() {
@@ -112,6 +135,26 @@ class EditAccidentFragment : Fragment() {
         binding.editAccidentSubmitButton.setOnClickListener() {
             onEditButtonClick()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.editAccidentMap.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.editAccidentMap.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.editAccidentMap.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.editAccidentMap.onStop()
     }
 
     private fun onEditButtonClick() {
@@ -138,7 +181,14 @@ class EditAccidentFragment : Fragment() {
                     "user" to user.uid,
                     "photoUri" to "photos/${photo.name}",
                     "userName" to user.displayName,
-                    "date" to Instant.now().toString()
+                    "date" to Instant.now().toString(),
+                    "lat" to marker.position.latitude.toString(),
+                    "lng" to marker.position.longitude.toString(),
+                    "place" to geocoder.getFromLocation(
+                        marker.position.latitude,
+                        marker.position.longitude,
+                        1
+                    ).first().getAddressLine(0)
                 )
 
                 database.document(args.accidentId).set(accident)

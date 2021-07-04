@@ -12,11 +12,15 @@
 
         <ImageView
             android:id="@+id/accident_details_image"
-            android:layout_width="397dp"
-            android:layout_height="265dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="32dp"
-            app:layout_constraintEnd_toEndOf="@+id/accident_details_user_name"
-            app:layout_constraintStart_toStartOf="@+id/accident_details_user_name"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="350dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/accident_details_user_name"
             tools:src="@tools:sample/avatars" />
 
@@ -71,5 +75,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:visibility="invisible" />
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/accident_details_location"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/accident_details_image"
+            app:layout_constraintStart_toStartOf="@+id/accident_details_image"
+            app:layout_constraintTop_toBottomOf="@+id/accident_details_image" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

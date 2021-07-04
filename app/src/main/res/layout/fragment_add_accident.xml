@@ -21,8 +21,8 @@
 
         <ImageView
             android:id="@+id/accident_preview"
-            android:layout_width="349dp"
-            android:layout_height="208dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
@@ -75,6 +75,30 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/add_accident_map"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toTopOf="@+id/add_accident_submit_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/accident_preview" />
+
+        <TextView
+            android:id="@+id/add_accident_no_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dodaj fotografie"
+            android:textColor="#FF0000"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/accident_preview" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
